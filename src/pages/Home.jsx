@@ -33,6 +33,10 @@ export default function Home() {
           console.log("Error getting documents: ", error);
         });
         if(user.email.split("@")[1] == "kkumail.com"){
+          setIsStdORTc("teacher")
+          return;
+        }
+        if(user.email.split("@")[1] == "gmail.com"){
           setIsStdORTc("student")
           return;
         }
