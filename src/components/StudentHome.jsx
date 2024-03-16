@@ -206,45 +206,69 @@ export default function StudentHome() {
   }, [checkinCode, stddata]);
 
   return (
-    <div className="min-h-dvh p-4">
-      <h1 className="mb-4 text-center text-lg font-bold">สำหรับนักเรียน/นักศึกษา</h1>
-      <div className="mb-4 flex flex-col gap-4 md:flex-row md:justify-center md:items-center">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline">เช็คชื่อเข้าเรียน</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>เช็คชื่อ</DialogTitle>
-              <DialogDescription>
-                กรุณากรอกรหัสห้องเรียนที่ได้จากครู/อาจารย์
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="code" className="text-right col-span-1">
-                  รหัสห้อง
-                </Label>
-                <Input
-                  id="code"
-                  defaultValue=""
-                  className="col-span-3"
-                  onChange={(e) => setCheckinCode(e.target.value)}
-                />
+    <div id="picback"
+      className="min-h-dvh p-4"
+      style={{
+        // backgroundImage: `url('https://sc.kku.ac.th/wp-content/uploads/2023/05/7R6A4341-scaled.jpg')`,
+        backgroundSize: "cover",
+        backgroundSize: "contain",
+      }}
+    >
+    
+        <h1 className="mb-4 text-center text-lg font-bold">
+          สำหรับนักเรียน/นักศึกษา
+        </h1>
+        <div className="mb-4 flex flex-col gap-4 md:flex-row md:justify-center md:items-center">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                style={{
+                  backgroundColor: "#001A99",
+                  color: "#FFFFFF", // White text color
+                }}
+              >
+                เช็คชื่อเข้าเรียน
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>เช็คชื่อ</DialogTitle>
+                <DialogDescription>
+                  กรุณากรอกรหัสห้องเรียนที่ได้จากครู/อาจารย์
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="code" className="text-right col-span-1">
+                    รหัสห้อง
+                  </Label>
+                  <Input
+                    id="code"
+                    defaultValue=""
+                    className="col-span-3"
+                    onChange={(e) => setCheckinCode(e.target.value)}
+                  />
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" onClick={handleCheckin}>
-                  เช็คชื่อ
-                </Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" onClick={handleCheckin}>
+                    เช็คชื่อ
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+       
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">ถาม-ตอบ</Button>
+            <Button variant="outline"
+            style={{
+              backgroundColor: "#FFC107",
+              color: "#000000", // White text color
+            }}>ถาม-ตอบ</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>

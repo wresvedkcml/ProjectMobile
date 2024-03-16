@@ -64,31 +64,38 @@ export default function Layout({ children }) {
     );
   } else {
     return (
-      <div className="page-home">
-        <div id="header" className="container py-4 sm:px-4">
-          <div className="flex justify-between items-center justify-items-center">
-            <h1 className="font-bold text-2xl">Students Checkin</h1>
-            <div className="flex gap-4 items-center justify-items-center">
-              {user ? (
-                <>
-                  <p>สวัสดี {user.displayName}</p>
-                  <Avatar>
-                    <AvatarImage src={user.photoURL} />
-                    <AvatarFallback>{user.displayName}</AvatarFallback>
-                  </Avatar>
-
-                  <Button onClick={Logout}>Logout</Button>
-                </>
-              ) : (
-                <Button onClick={Login}>Login</Button>
-              )}
-            </div>
+      <div
+      className="page-home"
+      style={{
+        backgroundColor: "#C3D6F4",
+      }}
+    >
+      <div id="header" className="container py-4 sm:px-4">
+        <div className="flex justify-between items-center justify-items-center">
+          <h1 className="font-bold text-2xl" style={{ color: "#000000" }}>
+            Students Checkin
+          </h1>
+          <div className="flex gap-4 items-center justify-items-center">
+            {user ? (
+              <>
+                <p className="font-bold">สวัสดี {user.displayName}</p>
+                <Avatar>
+                  <AvatarImage src={user.photoURL} />
+                  <AvatarFallback>{user.displayName}</AvatarFallback>
+                </Avatar>
+                <Button onClick={Logout}>Logout</Button>
+              </>
+            ) : (
+              <Button onClick={Login}>Login</Button>
+            )}
           </div>
         </div>
-        <div id="content" className="container sm:px-4 my-4">
-          {children}
-        </div>
       </div>
+      <div id="content" className="container sm:px-4 my-4">
+        {children}
+      </div>
+    </div>
+    
     );
   }
 }
