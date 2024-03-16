@@ -32,11 +32,11 @@ export default function Home() {
         }).catch((error) => {
           console.log("Error getting documents: ", error);
         });
-        if(user.email.split("@")[1] == "kkumail.com"){
+        if(user.email.split("@")[1] == "gmail.com"){
           setIsStdORTc("teacher")
           return;
         }
-        if(user.email.split("@")[1] == "gmail.com"){
+        if(user.email.split("@")[1] == "kkumail.com"){
           setIsStdORTc("student")
           return;
         }
