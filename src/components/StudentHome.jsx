@@ -31,17 +31,15 @@ import { dateoptions } from "../../helper";
 
 export default function StudentHome() {
   const [searchParams] = useSearchParams();
-  const [checkin, setCheckin] = useState(searchParams.get("checkin"));
-
+  const [checkinCode, setCheckinCode] = useState("");
   const [user, setUser] = useState(null);
-  const [code, setCode] = useState("");
   const [stddata, setStddata] = useState(null);
   const [roomdata, setRoomdata] = useState(null);
   const [haveroom, setHaveroom] = useState(null);
   const [qanda, setQanda] = useState(false);
 
   const handleCheckin = async () => {
-    let q = query(collection(db, "checkin"), where("id", "==", code));
+    let q = query(collection(db, "checkin"), where("id", "==", checkinCode));
     const querySnapshot = await getDocs(q);
     if (!stddata) {
       querySnapshot.forEach((doc) => {
@@ -99,7 +97,9 @@ export default function StudentHome() {
     }
   };
 
-  const handleCheckinWithQR = async (code) => {
+  const handleCheckinWithQR = async () => {
+    let q = query(collection(db, "checkin"), where("id", "==", checkinCode));
+    const querySnapshot = await getDocs(q);
     if (!stddata) {
       querySnapshot.forEach((doc) => {
         if (doc.exists()) {
@@ -116,6 +116,7 @@ export default function StudentHome() {
               console.log("Document successfully updated!");
               setRoomdata(room);
               setHaveroom(true);
+              clearCheckinParams();
             })
             .catch((error) => {
               setHaveroom(false);
@@ -128,8 +129,6 @@ export default function StudentHome() {
       }
       return;
     }
-    let q = query(collection(db, "checkin"), where("id", "==", code));
-    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       if (doc.exists()) {
         let room = doc.data();
@@ -146,10 +145,7 @@ export default function StudentHome() {
             console.log("Document successfully updated!");
             setRoomdata(room);
             setHaveroom(true);
-            if (searchParams.has("checkin")) {
-              searchParams.delete("checkin");
-              window.history.replaceState({}, "", `${hostname}`);
-            }
+            clearCheckinParams();
           })
           .catch((error) => {
             setHaveroom(false);
@@ -175,6 +171,13 @@ export default function StudentHome() {
     }
   };
 
+  const clearCheckinParams = () => {
+    if (searchParams.has("checkin")) {
+      searchParams.delete("checkin");
+      window.history.replaceState({}, "", `${hostname}`);
+    }
+  };
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -197,94 +200,87 @@ export default function StudentHome() {
   }, []);
 
   useEffect(() => {
-    if (stddata) {
-      if (checkin) {
-        handleCheckinWithQR(checkin);
-      }
+    if (stddata && checkinCode) {
+      handleCheckinWithQR();
     }
-  }, [checkin, stddata]);
+  }, [checkinCode, stddata]);
+
   return (
-    <div className="min-h-dvh">
-      <h1 className="mb-4 text-center text-lg">สำหรับนักเรียน/นักศึกษา</h1>
-      <div className="mb-4">
-        {haveroom ? (
-          <div></div>
-        ) : (
-          <div className="flex gap-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline">เช็คชื่อเข้าเรียน</Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>เช็คชื่อ</DialogTitle>
-                  <DialogDescription>
-                    กรุณากรอกรหัสห้องเรียนที่ได้จากครู/อาจารย์
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="code" className="text-right">
-                      รหัสห้อง
-                    </Label>
-                    <Input
-                      id="code"
-                      defaultValue=""
-                      className="col-span-3"
-                      onChange={(e) => setCode(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button type="button" onClick={handleCheckin}>
-                      เช็คชื่อ
-                    </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline">ถาม-ตอบ</Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>ถาม-ตอบ</DialogTitle>
-                  <DialogDescription>
-                    กรุณากรอกรหัสห้องเรียนที่ได้จากครู/อาจารย์
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="code" className="text-right">
-                      รหัสห้อง
-                    </Label>
-                    <Input
-                      id="code"
-                      defaultValue=""
-                      className="col-span-3"
-                      onChange={(e) => {
-                        setCode(e.target.value);
-                        handlecheckroom(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    {qanda && <DrawerComment roomId={code} />}
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        )}
+    <div className="min-h-dvh p-4">
+      <h1 className="mb-4 text-center text-lg font-bold">สำหรับนักเรียน/นักศึกษา</h1>
+      <div className="mb-4 flex flex-col gap-4 md:flex-row md:justify-center md:items-center">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">เช็คชื่อเข้าเรียน</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>เช็คชื่อ</DialogTitle>
+              <DialogDescription>
+                กรุณากรอกรหัสห้องเรียนที่ได้จากครู/อาจารย์
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="code" className="text-right col-span-1">
+                  รหัสห้อง
+                </Label>
+                <Input
+                  id="code"
+                  defaultValue=""
+                  className="col-span-3"
+                  onChange={(e) => setCheckinCode(e.target.value)}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" onClick={handleCheckin}>
+                  เช็คชื่อ
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">ถาม-ตอบ</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>ถาม-ตอบ</DialogTitle>
+              <DialogDescription>
+                กรุณากรอกรหัสห้องเรียนที่ได้จากครู/อาจารย์
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="qrcode" className="text-right col-span-1">
+                  รหัสห้อง
+                </Label>
+                <Input
+                  id="qrcode"
+                  defaultValue=""
+                  className="col-span-3"
+                  onChange={(e) => {
+                    setCheckinCode(e.target.value);
+                    handlecheckroom(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                {qanda && <DrawerComment roomId={checkinCode} />}
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       {haveroom ? (
-        <>
-          <Alert variant="success" className="mb-4">
-            <Terminal className="h-4 w-4" />
+        <div className="mb-4">
+          <Alert variant="success">
+            <Terminal className="h-4 w-4 inline mr-2" />
             <AlertTitle>เช็คชื่อสำเร็จ</AlertTitle>
             <AlertDescription>
               ขอบคุณที่เข้าเรียน วิชา {roomdata.subject} ห้อง {roomdata.room}{" "}
@@ -298,16 +294,18 @@ export default function StudentHome() {
             </AlertDescription>
           </Alert>
           <DrawerComment roomId={roomdata.id} />
-        </>
+        </div>
       ) : (
         haveroom === false && (
-          <Alert variant="destructive">
-            <Terminal className="h-4 w-4" />
-            <AlertTitle>เช็คชื่อไม่สำเร็จ</AlertTitle>
-            <AlertDescription>
-              กรุณาตรวจสอบรหัสห้องและลองใหม่อีกครั้ง
-            </AlertDescription>
-          </Alert>
+          <div className="mb-4">
+            <Alert variant="destructive">
+              <Terminal className="h-4 w-4 inline mr-2" />
+              <AlertTitle>เช็คชื่อไม่สำเร็จ</AlertTitle>
+              <AlertDescription>
+                กรุณาตรวจสอบรหัสห้องและลองใหม่อีกครั้ง
+              </AlertDescription>
+            </Alert>
+          </div>
         )
       )}
     </div>
