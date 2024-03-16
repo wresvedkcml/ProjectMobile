@@ -4,13 +4,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBGBEYCK8M0AuvizZfPwh1oTeilEZ_RArg",
-  authDomain: "mobile-project-f8ff2.firebaseapp.com",
-  projectId: "mobile-project-f8ff2",
-  storageBucket: "mobile-project-f8ff2.appspot.com",
-  messagingSenderId: "87610408159",
-  appId: "1:87610408159:web:4ee27318f28c5b8c24bd6a",
-  measurementId: "G-XHD26HYMKS"
+  apiKey: "AIzaSyBLDez3MsdYRnoZGXr1kvBefYfV5MGzsFM",
+  authDomain: "projectmobile-797e9.firebaseapp.com",
+  projectId: "projectmobile-797e9",
+  storageBucket: "projectmobile-797e9.appspot.com",
+  messagingSenderId: "512174301237",
+  appId: "1:512174301237:web:1a624082ce2f8345cfd17c",
+  measurementId: "G-51WW5SW7BN"
 };
 
 // Initialize Firebase
